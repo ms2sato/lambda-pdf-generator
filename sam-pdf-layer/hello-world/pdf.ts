@@ -3,6 +3,24 @@ import fs from 'fs';
 
 import chromium from '@sparticuz/chromium';
 import puppeteer, { Page } from 'puppeteer-core';
+import { readdir } from 'fs/promises';
+import { join } from 'path';
+
+const listDirectory = async (directoryPath: string): Promise<void> => {
+    try {
+        const files: string[] = await readdir(directoryPath);
+        console.log(`Contents of ${directoryPath}:`);
+        files.forEach((file) => {
+            console.log(file);
+        });
+    } catch (error) {
+        console.error(`Error reading directory: ${(error as Error).message}`);
+    }
+};
+
+const directoryPath = join('/opt/.fonts');
+listDirectory(directoryPath);
+process.env.FONTCONFIG_PATH = '/opt/.fonts';
 
 chromium.setHeadlessMode = true;
 chromium.setGraphicsMode = false;
@@ -51,11 +69,19 @@ const getPage = async () => {
         ignoreHTTPSErrors: true,
     };
 
+    await chromium.font('/opt/.fonts/NotoSansJP-Regular.woff');
+    await chromium.font('/opt/.fonts/NotoSansJP-Bold.woff');
+    await chromium.font('/opt/.fonts/NotoSansJP-Regular.woff2');
+    await chromium.font('/opt/.fonts/NotoSansJP-Bold.woff2');
+
     const browser = await puppeteer.launch(options);
 
     console.log(`openAndSave: puppeteer.launch: ${performance.now() - startTime}`);
     const startTime1 = performance.now();
     page = await browser.newPage();
+    page.on('pageerror', (error) => {
+        console.log('error on console', error.message);
+    });
     console.log(`openAndSave: browser.newPage: ${performance.now() - startTime1}`);
     return page;
 };
@@ -81,8 +107,11 @@ const openAndSave = async ({ key, content, option }: OpenAndSaveOption) => {
     //   waitUntil: 'networkidle0'
     // });
 
+    console.log('content', content);
+
     await page.setContent(content, {
-        waitUntil: ['load'], // "networkidle0" is too late
+        // waitUntil: ['load'], // "networkidle0" is too late
+        waitUntil: 'networkidle0',
     });
 
     console.log(`openAndSave: page.setContent: ${performance.now() - startTime2}`);
