@@ -61,3 +61,6 @@ https://github.com/shelfio/chrome-aws-lambda-layer
 ```
 process.env.FONTCONFIG_PATH = '/opt/.fonts';
 ```
+
+この内容も参考にすると良い
+https://github.com/alixaxel/chrome-aws-lambda/issues/246#issuecomment-1205412171
