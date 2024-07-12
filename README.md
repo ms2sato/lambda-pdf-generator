@@ -30,8 +30,10 @@ $ docker-compose run app bash
 ### 環境変数
 [必須]S3へのアップ先のバケット名を環境変数で指定すること。画面としてはGUIなので、以下の意味合いになる設定を書く。
 
+```
 AWS_S3_BUCKET=ms2sato-test-pdf-store # simple bucket name
 AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
+```
 
 # リクエスト・レスポンス
 
@@ -67,8 +69,9 @@ AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
 
 ```
 {
-  "statusCode": 200,
-  "body": "{\"key\":\"mydir/debug1.pdf\",\"bucket\":\"ms2sato-test-pdf-store\",\"signedUrl\":\"https://ms2sato-test-pdf-store.s3.ap-northeast-1.amazonaws.com/mydir/debug1.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIA4XHSGQIOTWIZYWDI%2F20240710%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240710T010424Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaDmFwLW5vcnRoZWFzdC0xIkcwRQIgcXa6cvHZx0D7NJ%2FvIAqmJm2Zb9SYOLoop%2BT1y0yO17ACIQDpir92U4ZHNfnLbmmJgWL4VcO419yYsG1FsTj7mlsiGCq0Awg6EAAaDDg3NDUzMzc4MjA0NSIMobS0tsOSMLxvea9zKpED5j%2BUPf6tIm6%2Fe9X5%2FZbjQD%2Fam%2Flu0XXTnv7deDao2hhMkOscQACMzlBXrrxa0LKVQ31KXY4WDuUIq9KeozfXPEXTuiAD%2Bx62G54I3L5bvnbxt04198TvIi6w78Hy6i%2Fec%2BJL6s8YRoyANopRrmTxGYoJermqu%2FVW88lWHl%2FQyJtvP6Ovry2AlZvFOcy9DDftJvNu5tIY0beQca9zE9nSYM4EuY8tTLl6OaNXHKWwnhC4G%2B3GNWo9XFEmxaqek5Z%2BaqL2B6veGMbHGzsai07fXXB6VeawFMcDhrusf%2Bk%2F2BuJpDYe%2BEGQMp%2B56nRTz0Kx63CRnAoFdeBII6cA5SmkXBogklpQ%2BdY9kHj9%2FlWj9NE%2FP5QsrXF%2FB5myd%2FOePX62mjipbs3D8JCZKafDET85HS2e0Iwb37B442HOkNClZ67Kd2Eh0lh0gyIdFam81O%2FYrBIXg3cmFVNl1%2ByB3JLxtIxU1362oAxcq7vf8F%2FyHIERYnkCzjZkk%2BldSPsB1r61D%2FIy9qNoA8Cfp8Uh9nNexRMwkLy3tAY6ngFlAaeG0l6fu9tNOM9M5tr64zKTFneaLVx9Up%2BLw96ODeOc2y8KXbycXOO2YlZAqYPu4yLwyM0olbfrkGi1Bzskg1XHEg6dYNGOR03Vwu7tpHVC3wZBZZT0tvKoEPryIi3oiLc752H5gsunk5QZPowGZIXWnihBWUFD6l1Jqxf%2B%2BC3tXDr4P1ulrp%2FFgcw8apD%2FmzJzwnbmjkeue%2BXGgg%3D%3D&X-Amz-Signature=0689d90d4e9593c00c5c3f9e08a2876e1032733b0ee87ab6d59d2cc2867dc66e&X-Amz-SignedHeaders=host&x-id=GetObject\"}"
+  "key": "mydir/debug1.pdf",
+  "bucket": "ms2sato-test-pdf-store",
+  "signedUrl": "https://ms2sato-test-pdf-store.s3.ap-northeast-1.amazonaws.com/mydir/debug1.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIA4XHSGQIO22NSCQGP%2F20240712%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240712T060030Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLW5vcnRoZWFzdC0xIkgwRgIhAKbIQJ9INfHYSQ6FTaPIDNEOGOpR3uAL4n8C27yQeiXJAiEAy8ctFWZiIVQsAfGjaBBhOdu15wlQDnmOzcUiMCXL%2Fs8qigMIbxAAGgw4NzQ1MzM3ODIwNDUiDGbX8qr2VXBLEiuqyyrnAlfV9JSth%2BYQHnwDY9XttAEnMZF3yw%2F3jnN%2BmEdNRrGJkjDeV9DVHqlVTc9Z3cJQgpGK9v%2BL1lo7%2BOyPj9k3XK7oRywPB7OhkK2yJHfy9KtVqbXtjHJqpOr0Ds9cPAg8mdkBhhZQMYtuusKTc3KbzDqfgyCvkqJPH%2BDOHD5%2BrSg1lnVSszYR%2BHfcajFyZwqy8RROIZAdiJHJ3paJVVw%2B3z%2BMliszabfoiQux%2FuuQDiWJfLyafxbFH6p8doc0SmkLc9VbNZT44hPCak%2BKK6c4Bbc38fsSusatgTCgfIwSP7yKVX04gH6TOiWXaE7gESWrkP7tyCcEggZD7niIiZMbxtHVo7Y7L0tjp0lc106Zl4CsK6SxCFJDzc0pbmJSE%2Bb5StPc3s4leU6%2FB7OtDbK5JgPn8O1jRknXonYYqcfznNP5uRUirc9CPIo38kXy05wPOZv%2BD4obabA0AUnAJHheYtNlWl91gQ7YMPeMw7QGOpwBj%2BXk7mqhyi0rHmEQO1IO%2BHsEg%2B3SJi9%2Fy2Vkfo6P9vOuzSnIyCNnv4%2BMyOxldRuWzCHDdI%2BuwQIPJxBgNDzcEnoUmRFue0%2FddVChmSvfzG%2BA1HPU46pNOYf7HukZwsx4kqZTOMuGJuhwUyU6PyLShrnxuv3d1xnajXMxQQnElEOX0MmU7VjLp3Ce1OfYmH8sTdc%2F6O85b5zaIE08&X-Amz-Signature=32599e83b25e777927f76a61214b408414aea6972536db9e1f7a5c18d15d527b&X-Amz-SignedHeaders=host&x-id=GetObject"
 }
 ```
 
