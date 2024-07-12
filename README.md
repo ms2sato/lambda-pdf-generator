@@ -1,35 +1,16 @@
 # 準備
 
 ## Lambda関数
+### 一般設定
+- [必須]作成されたLambda関数のロールに対してS3アクセスできるように設定
 - タイムアウト（3分とかにしたほうがいい）
 - メモリの調整（6000MB等。最低でも1024MB以上推奨）
-- 作成されたLambda関数のロールに対してS3アクセスできるように設定
 
-## 環境変数
-S3へのアップ先のバケット名を環境変数で指定すること
+### 環境変数
+[必須]S3へのアップ先のバケット名を環境変数で指定すること。画面としてはGUIなので、以下の意味合いになる設定を書く。
 
 AWS_S3_BUCKET=pdf-test # simple bucket name
 AWS_S3_BUCKET=pdf-test,pdf-test2 # multiple bucket names
-
-## レイヤー
-
-Lambdaレイヤーについては知っている前提。以下の2つのレイヤーを追加すること。
-
-### 軽量Chromeレイヤーの追加
-
-https://github.com/shelfio/chrome-aws-lambda-layer
-から `arn:aws:lambda:ap-northeast-1:764866452798:layer:chrome-aws-lambda:45` などのARNで指定
-
-### 日本語レイヤーの追加
-
-`./fonts` の中身を圧縮して zip を解凍した際に `./fonts` ディレクトリが存在するようにしておく。今の中身は https://github.com/minoryorg/Noto-Sans-CJK-JP/tree/master/fonts から取得したものなので、必要なら最新版で置き換えたり、不要なファイルを削除したりする。
-
-出来上がった zip を Lambda レイヤーとしてアップロードして利用する。
-
-このレイヤーは、 `/opt/.fonts` にファイルをアップロードすることに注意（この辺りがバージョンによって違う様子で様々な情報が世間で錯綜している）
-
-
-
 
 # リクエスト・レスポンス
 
@@ -82,3 +63,17 @@ process.env.FONTCONFIG_PATH = '/opt/.fonts';
 https://github.com/alixaxel/chrome-aws-lambda/issues/246#issuecomment-1205412171
 
 
+## レイヤー
+
+Lambdaレイヤーについては知っている前提。以下の2つのレイヤーが追加される。
+
+### 軽量Chromeレイヤーの追加
+
+https://github.com/shelfio/chrome-aws-lambda-layer
+から `arn:aws:lambda:ap-northeast-1:764866452798:layer:chrome-aws-lambda:45` などのARNで指定
+
+### 日本語レイヤーの追加
+
+`pdfgen/fonts_layer/.fonts` の中身が自動的にFontsLayerとして作成される。今の中身は https://github.com/minoryorg/Noto-Sans-CJK-JP/tree/master/fonts から取得したものなので、必要なら最新版で置き換えたり、不要なファイルを削除したりする。
+
+レイヤーは `/opt/.fonts` にファイルを配置するすることに注意（この辺りがバージョンによって違う様子で様々な情報が世間で錯綜している）
