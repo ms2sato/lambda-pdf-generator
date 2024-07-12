@@ -74,7 +74,21 @@ const checkPayload = (params: ExecuteOptions) => {
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  *
  */
-export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const lambdaHandler = async (
+    event: APIGatewayProxyEvent,
+): Promise<
+    | APIGatewayProxyResult
+    | {
+          bucket?: undefined;
+          signedUrl?: undefined;
+          key: string;
+      }
+    | {
+          bucket: string;
+          signedUrl: string;
+          key: string;
+      }
+> => {
     const startTime = performance.now();
     try {
         let payload;
@@ -103,16 +117,21 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         checkPayload(payload);
 
         const ret = await execute(payload);
-        const response: APIGatewayProxyResult = {
-            statusCode: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(ret),
-        };
 
         console.log(`handler: ${performance.now() - startTime}`);
-        return response;
+        if (event.httpMethod) {
+            const response: APIGatewayProxyResult = {
+                statusCode: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ret),
+            };
+
+            return response;
+        } else {
+            return ret;
+        }
     } catch (err) {
         if (err instanceof InputError) {
             console.error(`Error(400): ${err.message}`);
