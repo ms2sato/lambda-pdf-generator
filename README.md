@@ -1,6 +1,27 @@
 # 準備
 
-## Lambda関数
+## 開発環境
+今の所 Docker 内で開発しているので以下の流れです。
+
+### 環境変数の設定
+
+```
+$ cp .env.sample .env
+```
+
+.env ファイルの環境変数を入れてください。
+
+```terminal
+$ docker-compose run app bash
+> cd pdfgen
+> sam build
+> sam deploy
+```
+
+開発中は `build` `deploy` よりも `sam sync --watch` が便利です。
+
+## AWS上のLambda関数の設定
+
 ### 一般設定
 - [必須]作成されたLambda関数のロールに対してS3アクセスできるように設定
 - タイムアウト（3分とかにしたほうがいい）
@@ -9,8 +30,8 @@
 ### 環境変数
 [必須]S3へのアップ先のバケット名を環境変数で指定すること。画面としてはGUIなので、以下の意味合いになる設定を書く。
 
-AWS_S3_BUCKET=pdf-test # simple bucket name
-AWS_S3_BUCKET=pdf-test,pdf-test2 # multiple bucket names
+AWS_S3_BUCKET=ms2sato-test-pdf-store # simple bucket name
+AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
 
 # リクエスト・レスポンス
 
