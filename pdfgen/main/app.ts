@@ -105,6 +105,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         const ret = await execute(payload);
         const response: APIGatewayProxyResult = {
             statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(ret),
         };
 
