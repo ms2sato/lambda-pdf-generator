@@ -35,7 +35,7 @@ AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
 
 # リクエスト・レスポンス
 
-例えばこんな感じ。content の内容がPDFに変換される。fontを指定しておけば日本語も対応できる。
+例えばこんな感じ。content の内容がPDFに変換される。明示的なfont指定がない場合にも、日本語はfallbackされて表示できるはず。
 
 リクエスト例
 
