@@ -58,6 +58,9 @@ AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
       },
       "displayHeaderFooter": true
     },
+    "s3": {
+        "ContentDisposition": "inline;filename=PDFDLTest"
+    },
     "signedUrl": {
       "expiresIn": "3600"
     }

@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { OpenAndSaveOption, outputPdf } from './pdf';
+import { OutputPdfOption, outputPdf } from './pdf';
 import { S3Client, PutObjectCommand, GetObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import crypto from 'crypto';
@@ -84,7 +84,7 @@ export const lambdaHandler = async (
           key: string;
       }
     | {
-          bucket: string;
+          bucket: string | undefined;
           signedUrl: string;
           key: string;
       }
@@ -144,30 +144,31 @@ export const lambdaHandler = async (
     }
 };
 
-type ExecuteOptions = OpenAndSaveOption & { bucket: string; option?: { signedUrl?: boolean | { expiresIn: number } } };
+type ExecuteOptions = OutputPdfOption & {
+    bucket: string;
+    option?: {
+        s3?: Partial<PutObjectCommandInput>;
+        signedUrl?: boolean | { expiresIn: number };
+    };
+};
 
 const execute = async (params: ExecuteOptions) => {
     const { pdf, key } = await outputPdf(params);
 
-    const ret = await putToS3(pdf, params.bucket, key, params.option?.signedUrl);
-    return { key, ...ret };
-};
-
-const putToS3 = async (
-    pdf: Buffer,
-    bucket: string,
-    key: string,
-    signedUrlOption?: RequestPresigningArguments | boolean,
-) => {
-    const params: PutObjectCommandInput = {
+    const input: PutObjectCommandInput = {
+        ...params.option?.s3,
         Body: Buffer.from(pdf),
-        Bucket: bucket,
+        Bucket: params.bucket,
         ContentType: 'application/pdf',
-        ContentDisposition: 'inline',
         Key: key ?? `${crypto.randomUUID()}.pdf`,
     };
 
-    const command = new PutObjectCommand(params);
+    const ret = await putToS3(input, params.option?.signedUrl);
+    return { key, ...ret };
+};
+
+const putToS3 = async (input: PutObjectCommandInput, signedUrlOption?: RequestPresigningArguments | boolean) => {
+    const command = new PutObjectCommand(input);
     await client.send(command);
 
     if (signedUrlOption === undefined) {
@@ -175,13 +176,13 @@ const putToS3 = async (
     }
 
     const getObjectCommand = new GetObjectCommand({
-        Bucket: params.Bucket,
-        Key: params.Key,
+        Bucket: input.Bucket,
+        Key: input.Key,
     });
 
     const getSignedUrlOption: RequestPresigningArguments = typeof signedUrlOption === 'boolean' ? {} : signedUrlOption;
     const signedUrl = await getSignedUrl(client, getObjectCommand, getSignedUrlOption);
-    return { bucket, signedUrl };
+    return { bucket: input.Bucket, signedUrl };
 };
 
 console.log(`bootup: ${performance.now() - startTime}`);

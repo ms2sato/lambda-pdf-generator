@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 import chromium from '@sparticuz/chromium';
-import puppeteer, { Page } from 'puppeteer-core';
+import puppeteer, { Page, PDFOptions } from 'puppeteer-core';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 
@@ -25,10 +25,18 @@ process.env.FONTCONFIG_PATH = '/opt/.fonts';
 chromium.setHeadlessMode = true;
 chromium.setGraphicsMode = false;
 
+export type OutputPdfOption = {
+    key: string;
+    content: string;
+    option?: {
+        pdf?: PDFOptions;
+    };
+};
+
 // @see https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-on-gitlabci
 // @see https://qiita.com/masaminh/items/eb9188c15de60b6b1de6#%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E5%86%85%E5%AE%B9
 
-export const outputPdf = async (params: OpenAndSaveOption) => {
+export const outputPdf = async (params: OutputPdfOption) => {
     const startTime = performance.now();
     // return await Promise.all(targets.map((target) => openAndSave(target)));
     const ret = await openAndSave(params);
@@ -36,7 +44,7 @@ export const outputPdf = async (params: OpenAndSaveOption) => {
     return ret;
 };
 
-const defaultPdfOption = {
+const defaultPdfOption: PDFOptions = {
     format: 'A4',
     printBackground: true,
     displayHeaderFooter: true,
@@ -86,15 +94,7 @@ const getPage = async () => {
     return page;
 };
 
-export type OpenAndSaveOption = {
-    key: string;
-    content: string;
-    option?: {
-        pdf?: any;
-    };
-};
-
-const openAndSave = async ({ key, content, option }: OpenAndSaveOption) => {
+const openAndSave = async ({ key, content, option }: OutputPdfOption) => {
     const page = await getPage();
     const startTime2 = performance.now();
 
