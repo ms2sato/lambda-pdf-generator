@@ -24,11 +24,11 @@ $ docker-compose run app bash
 
 ### 一般設定
 - [必須]作成されたLambda関数のロールに対してS3アクセスできるように設定
-- タイムアウト（3分とかにしたほうがいい）
+- タイムアウト（3分等にしたほうがいい）
 - メモリの調整（6000MB等。最低でも1024MB以上推奨）
 
 ### 環境変数
-[必須]S3へのアップ先のバケット名を環境変数で指定すること。画面としてはGUIなので、以下の意味合いになる設定を書く。
+[必須]S3へのアップ先のバケット名を環境変数で指定すること。画面としてはGUIなので、以下の意味合いになる設定を書くこと。
 
 ```
 AWS_S3_BUCKET=ms2sato-test-pdf-store # simple bucket name
@@ -45,7 +45,7 @@ AWS_S3_BUCKET=ms2sato-test-pdf-store,pdf-test2 # multiple bucket names
 {
   "bucket": "ms2sato-test-pdf-store",
   "key": "mydir/debug1.pdf",
-  "content": "\n    <html>\n      <head>\n        <meta charset=\"utf-8\">\n  <style>@font-face {font-family: 'NotoSansJP';src: url('/opt/.fonts/NotoSansJP-Regular.woff') format(\"woff\");} \n @font-face {font-family: 'NotoSansJP'; font-weight: bold; src: url('/opt/.fonts/NotoSansJP-Bold.woff') format(\"woff\");} \nbody {font-family: 'NotoSansJP', sans-serif;}</style>    </head>\n      <body>\n        <h1>[1]test:日本語:Your awesome PDF report template</h1>\n        <h2 class=\"title\">title</h2>\n      </body>\n    </html>",
+  "content": "\n    <html>\n      <head>\n        <meta charset=\"utf-8\">\n  <style>@font-face {font-family: 'IPAFont';src: url('/opt/.fonts/ipaexg.ttf') format(\"truetype\");} \n body {font-family: 'IPAFont', sans-serif;}</style>    </head>\n      <body>\n        <h1>[1]test:日本語:Your awesome PDF report template</h1>\n        <h2 class=\"title\">title</h2>\n      </body>\n    </html>",
   "option": {
     "pdf": {
       "format": "A4",
@@ -92,7 +92,7 @@ https://github.com/alixaxel/chrome-aws-lambda/issues/246#issuecomment-1205412171
 
 ## レイヤー
 
-Lambdaレイヤーについては知っている前提。以下の2つのレイヤーが追加される。
+Lambdaレイヤーについては知っている前提。以下の2つのレイヤーが追加されます。
 
 ### 軽量Chromeレイヤーの追加
 
@@ -101,6 +101,6 @@ https://github.com/shelfio/chrome-aws-lambda-layer
 
 ### 日本語レイヤーの追加
 
-`pdfgen/fonts_layer/.fonts` の中身が自動的にFontsLayerとして作成される。今の中身は https://github.com/minoryorg/Noto-Sans-CJK-JP/tree/master/fonts から取得したものなので、必要なら最新版で置き換えたり、不要なファイルを削除したりする。
+`pdfgen/fonts_layer/.fonts` の中身が自動的にFontsLayerとして作成される。今の中身は https://moji.or.jp/ipafont/ から取得した IPAexゴシック(Ver.004.01)。必要なら最新版で置き換えたり、不要なファイルを削除したりしてください。
 
 レイヤーは `/opt/.fonts` にファイルを配置するすることに注意（この辺りがバージョンによって違う様子で様々な情報が世間で錯綜している）
