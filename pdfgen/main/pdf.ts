@@ -1,10 +1,9 @@
-import path from 'path';
+import path, { extname, join } from 'path';
 import fs from 'fs';
 
 import chromium from '@sparticuz/chromium';
 import puppeteer, { Page, PDFOptions } from 'puppeteer-core';
 import { readdir } from 'fs/promises';
-import { join } from 'path';
 
 const listDirectory = async (directoryPath: string): Promise<void> => {
     try {
@@ -18,12 +17,23 @@ const listDirectory = async (directoryPath: string): Promise<void> => {
     }
 };
 
-const directoryPath = join('/opt/.fonts');
-listDirectory(directoryPath);
-process.env.FONTCONFIG_PATH = '/opt/.fonts';
+const fondDirectoryPath = '/opt/.fonts';
+listDirectory(fondDirectoryPath);
+process.env.FONTCONFIG_PATH = fondDirectoryPath;
 
 chromium.setHeadlessMode = true;
 chromium.setGraphicsMode = false;
+
+const readFonts = async () => {
+    const fontExtensions = ['.woff', '.woff2', '.ttf'];
+    const files: string[] = await readdir(fondDirectoryPath);
+    const fontFiles = files.filter((file) => fontExtensions.includes(extname(file)));
+    for (const file of fontFiles) {
+        const fontFile = join(fondDirectoryPath, file);
+        console.log('readFont', fontFile);
+        await chromium.font(fontFile);
+    }
+};
 
 export type OutputPdfOption = {
     key: string;
@@ -77,10 +87,7 @@ const getPage = async () => {
         ignoreHTTPSErrors: true,
     };
 
-    await chromium.font('/opt/.fonts/NotoSansJP-Regular.woff');
-    await chromium.font('/opt/.fonts/NotoSansJP-Bold.woff');
-    await chromium.font('/opt/.fonts/NotoSansJP-Regular.woff2');
-    await chromium.font('/opt/.fonts/NotoSansJP-Bold.woff2');
+    await readFonts();
 
     const browser = await puppeteer.launch(options);
 
